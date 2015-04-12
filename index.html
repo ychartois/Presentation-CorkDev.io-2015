@@ -37,7 +37,7 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section>
-					<h2>Les concepts de la programmation fonctionnelle illustrés avec Java 8</h2>
+					<h2>Concepts of Functional programming</h2>
 					<p>
 						<small><a href="https://github.com/ychartois">Yannick Chartois</a> / <a href="https://twitter.com/ychartois">@ychartois</a></small>
 					</p>
@@ -55,19 +55,24 @@
 				</section>
 
 				<section>
-					<h2>Question</h2>
+					<h2>My first question</h2>
 					<p>
-						Maintenant que nous allons avoir les lambdas, peut-on faire la même chose en Java 8?
+						Now that we have lambdas in Java 8, can we use FP concepts?
 					</p>
+                    </br>
+                    <h2>Extended question</h2>
+                    <p>
+                        Is there an advantage to use theses concepts in other language with First Class Function as Javascript, Go, ...
+                    </p>
 				</section>
 
 				<section>
 					<h2>1. First Class Function</h2>
 					<p>
-                        Définition
+                        Definition
 					</p>
                     <blockquote cite="http://en.wikipedia.org/wiki/First-class_function">
-                        &ldquo;Les fonctions sont traitées par le langage comme des valeurs de première classe.&rdquo;
+                        &ldquo;A programming language is said to have first-class functions if it treats functions as first-class citizens&rdquo;
                     </blockquote>
 				</section>
 
@@ -78,7 +83,7 @@
 Function< String, String > hello = (String s) -> "hello " + s;
                     </code></pre>
 
-                    <p>Resultat:</p>
+                    <p>Result:</p>
                     <pre><code data-trim contenteditable>
 hello ;
 // BaseConcepts$$Lambda$1@a09ee92
@@ -92,10 +97,10 @@ hello.apply("Erouan") ;
                 <section>
                     <h2>2. High order function</h2>
                     <p>
-                        Définition
+                        Definition
                     </p>
                     <blockquote cite="">
-                        &ldquo;C'est une fonction qui prend une ou plusieurs fonctions comme entrée et/ou qui renvoie une fonction&rdquo;
+                        &ldquo;It's a function that takes one or more function as parameters or that returns a function&rdquo;
                     </blockquote>
                 </section>
 
@@ -115,18 +120,70 @@ twice(hello).apply("Erouan");
                     </code></pre>
                 </section>
 
+
                 <section>
-                    <h2>3. Functor</h2>
+                    <h2>2. High order function</h2>
+                    <p>Code:</p>
+					<pre><code data-trim contenteditable>
+hello = (s) -> return "Hello " + s
+
+twice = (func, s) ->
+    return func func s
+                    </code></pre>
+
+                    <p>Resultat:</p>
+                    <pre><code data-trim contenteditable>
+twice(hello,"Erouan")
+// hello hello Erouan
+                    </code></pre>
+                </section>
+
+
+                <section>
+                    <h2>3. Currying</h2>
                     <p>
-                        Définition
+                        Definition
                     </p>
-                    <blockquote cite="">
-                        &ldquo;C'est une collection d'éléments X qui peut s'appliquer une fonction f: X -> Y pour créer une collection Y&rdquo;
+                    <blockquote cite="http://en.wikipedia.org/wiki/Currying">
+                        &ldquo;Currying is the technique of translating the evaluation of a function that takes multiple arguments (or a tuple of arguments) into evaluating a sequence of functions, each with a single argument&rdquo;
                     </blockquote>
                 </section>
 
                 <section>
-                    <h2>3. Functor - Map</h2>
+                    <h2>3. Currying</h2>
+                    <p>Previous code:</p>
+					<pre><code data-trim contenteditable>
+twice = (func, s) ->
+    return func func s
+                    </code></pre>
+
+                    <p>Currying code:</p>
+					<pre><code data-trim contenteditable>
+twice = ( func ) -> ( s ) ->
+    return func func s
+                    </code></pre>
+
+                    <p>Result:</p>
+                    <pre><code data-trim contenteditable>
+twice(hello)("Erouan")
+// hello hello Erouan
+                    </code></pre>
+                </section>
+
+
+
+                <section>
+                    <h2>4. Functor</h2>
+                    <p>
+                        Definition
+                    </p>
+                    <blockquote cite="http://bodil.org/hipster/#/20">
+                        &ldquo;A functor is a collection of X that can apply a function f : X → Y over itself to create a collection of Y.&rdquo;
+                    </blockquote>
+                </section>
+
+                <section>
+                    <h2>4. Functor - Map</h2>
                     <p>Code:</p>
 					<pre><code data-trim contenteditable>
 List< String > map( Function< String, String > f
@@ -139,25 +196,30 @@ List< String > map( Function< String, String > f
 }
                     </code></pre>
 
-                    <p>Resultat:</p>
+                    <p>Result:</p>
                     <pre><code data-trim contenteditable>
 List< String > confs =
-                 Arrays.asList( new String[]{"jug", "devoxx", "javaone"} );
+                 Arrays.asList( new String[]{"Corkdev", "devoxx", "javaone"} );
 
 map( s -> s.toUpperCase(), confs );
 
-// [JUG, DEVOXX, JAVAONE]
+// [CORKDEV, DEVOXX, JAVAONE]
                     </code></pre>
 
-                    <p>Avec les Streams Java 8:</p>
+                    <p>With Java 8:</p>
                     <pre><code data-trim contenteditable>
 confs.stream().map( s -> s.toUpperCase() ).collect( Collectors.toList() )
+                    </code></pre>
+
+                    <p>With Coffescript:</p>
+                    <pre><code data-trim contenteditable>
+["Corkdev", "devoxx", "javaone"].map (el) -> return el.toUpperCase()
                     </code></pre>
 
                 </section>
 
                 <section>
-                    <h2>3. Functor - Filter</h2>
+                    <h2>4. Functor - Filter</h2>
                     <p>Code:</p>
 					<pre><code data-trim contenteditable>
 List< String > filter( Function< String, Boolean > f,
@@ -171,7 +233,7 @@ List< String > filter( Function< String, Boolean > f,
 }
                     </code></pre>
 
-                    <p>Resultat:</p>
+                    <p>Result:</p>
                     <pre><code data-trim contenteditable>
 List< String > confs =
               Arrays.asList( new String[]{"jug", "devoxx", "javaone"} );
@@ -181,25 +243,74 @@ filter(s -> s.contains("j"), confs) ;
 // [jug, javaone]
                     </code></pre>
 
-                    <p>Avec les Streams Java 8:</p>
+                    <p>With Java 8:</p>
                     <pre><code data-trim contenteditable>
 confs.stream().filter( s -> s.contains("j") ).collect(Collectors.toList())
                     </code></pre>
 
+                    <p>With Coffescript:</p>
+                    <pre><code data-trim contenteditable>
+["Corkdev", "devoxx", "javaone"].filter (el) -> return el.indexOf('k') != -1
+                    </code></pre>
+
                 </section>
 
+
                 <section>
-                    <h2>4. Combinator</h2>
+                    <h2>5. Reduce / fold</h2>
                     <p>
-                        Définition
+                        Definition
                     </p>
                     <blockquote cite="">
-                        &ldquo;C'est une function qui définie une nouvelle fonction à partir de ses arguments ou d'autre combinators&rdquo;
+                        &ldquo;Fold is a family of higher order functions that process a data structure in some order and build a return value&rdquo;
                     </blockquote>
                 </section>
 
                 <section>
-                    <h2>4. Combinator - Null Combinator</h2>
+                    <h2>5. Reduce / fold</h2>
+
+                    <p>Code:</p>
+					<pre><code data-trim contenteditable>
+String reduce( BinaryOperator< String > op , List< String > values ) {
+    String toReturn = "";
+    for( String current : values ) {
+        toReturn = toReturn.isEmpty() ? current : op.apply(toReturn, current)
+    }
+return toReturn; }
+                    </code></pre>
+
+                    <p>Result:</p>
+                    <pre><code data-trim contenteditable class="java">
+List< String > confs = Arrays.asList( "Corkdev", "devoxx", "javaone" );
+reduce( (s1, s2) -> s1 + ", " + S2, confs );
+// Corkdev, devoxx, javaone
+                    </code></pre>
+
+                    <p>With Java 8:</p>
+                    <pre><code data-trim contenteditable>
+confs.stream().reduce((s1, s2) -> s1 + ", " + s2 ).get() )
+                    </code></pre>
+
+                    <p>With Coffescript:</p>
+                    <pre><code data-trim contenteditable>
+["Corkdev", "devoxx", "javaone"].reduce (e1, e2) -> return e1 + ", " + e2
+                    </code></pre>
+
+                </section>
+
+
+                <section>
+                    <h2>6. Combinator</h2>
+                    <p>
+                        Definition
+                     </p>
+                    <blockquote cite="">
+                        &ldquo;One definition of a combinator is a function with no free variables.&rdquo;
+                    </blockquote>
+                </section>
+
+                <section>
+                    <h2>6. Combinator - Null Combinator</h2>
 
                     <p>Constat:</p>
                     <pre><code data-trim contenteditable>
@@ -217,7 +328,7 @@ Function< String, String > nullCheck( Function< String, String > f ) {
 }
                     </code></pre>
 
-                    <p>Resultat:</p>
+                    <p>Result:</p>
                     <pre><code data-trim contenteditable class="java">
 map( nullCheck(s -> s.toUpperCase()), confs2)
 // [JUG, DEVOXX, JAVAONE, null]
@@ -226,17 +337,17 @@ map( nullCheck(s -> s.toUpperCase()), confs2)
                 </section>
 
                 <section>
-                    <h2>5. Composition</h2>
+                    <h2>7. Composition</h2>
                     <p>
-                        Définition
+                        Definition
                     </p>
                     <blockquote cite="">
-                        &ldquo;Combine plusieurs fonctions pour créer une nouvelle fonction&rdquo;
+                        &ldquo;Combine several functions to create a new function&rdquo;
                     </blockquote>
                 </section>
 
                 <section>
-                    <h2>5. Composition</h2>
+                    <h2>7. Composition</h2>
 
                     <p>Code:</p>
 					<pre><code data-trim contenteditable>
@@ -246,7 +357,7 @@ Function< String, String > compose ( Function< String, String > f1,
 }
                     </code></pre>
 
-                    <p>Resultat:</p>
+                    <p>Result:</p>
                     <pre><code data-trim contenteditable class="java">
 Function< String, String > up = (String s) -> s.toUpperCase();
 Function< String, String > hello = (String s) -> "hello " + s;
@@ -269,7 +380,7 @@ up.compose(hello).apply("Erouan")
 
 				<section>
 					<h1>END !</h1>
-					<h4>Les sources: <a href="https://github.com/ychartois/ProgFoncJava8">ProgFoncJava8</a></h4>
+					<h4>Sources: <a href="https://github.com/ychartois/ProgFoncJava8">ProgFoncJava8</a></h4>
                     <h4>Twitter: <a href="https://twitter.com/ychartois">@ychartois</a></h4>
 				</section>
 
