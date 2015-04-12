@@ -213,7 +213,7 @@ confs.stream().map( s -> s.toUpperCase() ).collect( Collectors.toList() )
 
                     <p>With Coffescript:</p>
                     <pre><code data-trim contenteditable>
-["Corkdev", "devoxx", "javaone"].map (el) -> return el.toUpperCase()
+["Corkdev", "devoxx", "javaone"].map (el) -> el.toUpperCase()
                     </code></pre>
 
                 </section>
@@ -250,7 +250,7 @@ confs.stream().filter( s -> s.contains("j") ).collect(Collectors.toList())
 
                     <p>With Coffescript:</p>
                     <pre><code data-trim contenteditable>
-["Corkdev", "devoxx", "javaone"].filter (el) -> return el.indexOf('k') != -1
+["Corkdev", "devoxx", "javaone"].filter (el) -> el.indexOf('k') != -1
                     </code></pre>
 
                 </section>
@@ -293,7 +293,7 @@ confs.stream().reduce((s1, s2) -> s1 + ", " + s2 ).get() )
 
                     <p>With Coffescript:</p>
                     <pre><code data-trim contenteditable>
-["Corkdev", "devoxx", "javaone"].reduce (e1, e2) -> return e1 + ", " + e2
+["Corkdev", "devoxx", "javaone"].reduce (e1, e2) -> e1 + ", " + e2
                     </code></pre>
 
                 </section>
@@ -369,7 +369,7 @@ compose( up, hello).apply("Erouan") ;
 
                     </code></pre>
 
-                    <p>Avec Java 8:</p>
+                    <p>With Java 8:</p>
                     <pre><code data-trim contenteditable>
 hello.andThen(up).apply("Erouan")
 up.compose(hello).apply("Erouan")
@@ -377,10 +377,74 @@ up.compose(hello).apply("Erouan")
 
                 </section>
 
+                <section>
+                    <h2>7. Composition - Javascript</h2>
+
+                    <p>Code Coffee:</p>
+					<pre><code data-trim contenteditable>
+compose = (fs...) -> fs.reduce (f, g) -> (as...) -> f g as...
+                    </code></pre>
+
+                    <p>Code JS:</p>
+					<pre><code data-trim contenteditable>
+compose = function() {
+    var fs;
+    fs = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return fs.reduce(function(f, g) {
+        return function() {
+            var as;
+            as = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+            return f(g.apply(null, as));
+        };
+    });
+};
+                    </code></pre>
+
+                    <p>Result:</p>
+                    <pre><code data-trim contenteditable class="java">
+up = (s) -> s.toUpperCase()
+hello = (s) -> "Hello " + s
+
+compose(up, hello) "Pierre"
+// HELLO PIERRE
+
+                    </code></pre>
+
+                </section>
+
+                <section>
+                    <h2>Why??</h2>
+
+					<pre><code data-trim contenteditable>
+names = ["Pierre", "John", "Colm", "Petra", "Lenka"]
+up = (s) -> s.toUpperCase()
+hello = (s) -> "Hello " + s
+                    </code></pre>
+
+                    <p>Because for me that:</p>
+					<pre><code data-trim contenteditable>
+names.filter( (el) -> el.indexOf('k') == -1 )
+    .map( (el) -> compose(up, hello)(el) )
+    .reduce( (e1, e2) -> e1 + ", " + e2 )
+
+                    </code></pre>
+
+                    <p>Is more readable than:</p>
+					<pre><code data-trim contenteditable>
+acc = ""
+for name in names
+    if name.indexOf('k') == -1
+        if acc != ""
+            acc += ", " + up hello name
+        else
+            acc += up hello name
+                    </code></pre>
+
+                </section>
 
 				<section>
 					<h1>END !</h1>
-					<h4>Sources: <a href="https://github.com/ychartois/ProgFoncJava8">ProgFoncJava8</a></h4>
+					<h4>Sources: <a href="https://github.com/ychartois/Presentation-CorkDev.io-2015">ProgFoncJava8</a></h4>
                     <h4>Twitter: <a href="https://twitter.com/ychartois">@ychartois</a></h4>
 				</section>
 
